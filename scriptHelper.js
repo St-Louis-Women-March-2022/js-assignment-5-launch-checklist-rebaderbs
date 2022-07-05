@@ -31,17 +31,16 @@ function validateInput(testInput) {
 //window alert if all fields are not completed
 function formSubmission(document, list, pilot, copilot, fuelLevel, cargoLevel) {
    //input references
-   let pilotStatus = document.getElementById('pilowStatus');
+   let pilotStatus = document.getElementById('pilotStatus');
    let copilotStatus = document.getElementById('copilotStatus');
    let fuelStatus = document.getElementById('fuelStatus');
    let cargoStatus = document.getElementById('cargoStatus');
    let launchStatus = document.getElementById('launchStatus');
 
-   if (
-       pilot.value === "" ||
+   if (pilot.value === "" ||
        copilot.value === "" ||
        fuelLevel.value === "" ||
-       cargoLevel.value === "" ||
+       cargoLevel.value === ""
    ) { alert("All fields must be completed.");
    }
 
@@ -50,7 +49,7 @@ function formSubmission(document, list, pilot, copilot, fuelLevel, cargoLevel) {
    else if (validateInput(pilot.value) === 'Is a Number' || validateInput(copilot.value) === 'Is a Number') {
        alert("Enter only letters for pilot and co-pilot.");
    } else if (validateInput(fuelLevel.value) === 'Not a Number' || validateInput(cargoLevel.value) === 'Not a Number')  {
-       alert("Enter only numberical values for fuel level and cargo mass.");
+       alert("Enter only numerical values for fuel level and cargo mass.");
    } //if the above 2  check out, update pilot status
    else {
        list.style.visibility = 'visible';
@@ -59,6 +58,7 @@ function formSubmission(document, list, pilot, copilot, fuelLevel, cargoLevel) {
    }
 
    //fuel levels & cargo levels with update to faulty items list
+   //tested multiple scenarios with diff values and each status update works
    if (Number(fuelLevel.value) < 10000) {
        list.style.visibility = 'visible';
        launchStatus.style.color = 'red';
@@ -73,21 +73,25 @@ function formSubmission(document, list, pilot, copilot, fuelLevel, cargoLevel) {
        list.style.visibility = 'visible';
        launchStatus.style.color = 'green';
        launchStatus.innerHTML = `Shuttle is ready for launch`;
-       cargoStatus.innerHTML = `Cargo weight is light enough for takeoff`;
-       fuelStatus.innerHTML = `Fuel level sufficient for journey`;
+       cargoStatus.innerHTML = `Cargo mass low enough for launch`;
+       fuelStatus.innerHTML = `Fuel level high enough for launch`;
    }
 }
 
 async function myFetch() {
     let planetsReturned;
 
-    planetsReturned = await fetch().then( function(response) {
+    planetsReturned = await fetch("https://handlers.education.launchcode.org/static/planets.json").then( function(response) {
+        return response.json()
         });
 
     return planetsReturned;
 }
 
+//index variable to hold place of random planet to return
 function pickPlanet(planets) {
+    let index = Math.floor(Math.random() * planets.length);
+    return planets[index]
 }
 
 module.exports.addDestinationInfo = addDestinationInfo;
